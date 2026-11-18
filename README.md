@@ -194,7 +194,7 @@ docker compose exec -T api relaydesk -mode smoke
 
 The smoke test changes simulator mode and creates synthetic records. Run it in an otherwise idle development workspace; it restores Healthy on exit. It usually takes about a minute because it waits through actual retry backoff, but no timing has been measured in the build environment.
 
-GitHub Actions configuration is supplied for the full container build, PostgreSQL transaction test, and live smoke. No remote CI run is claimed for this project until it has been published and the workflow actually runs.
+GitHub Actions configuration is supplied for the full container build, PostgreSQL transaction test, and live smoke. [GitHub Actions run 44299083434](https://github.com/TechiLoki/relaydesk/actions/runs/44299083434) passed the complete build, PostgreSQL transaction checks, and real HTTP recovery proof. See VALIDATION.md for the exact tested commit and remaining limits.
 
 For host development with Go 1.24+, C++20, Node 20+, and TypeScript:
 

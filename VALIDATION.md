@@ -1,25 +1,29 @@
 # Verification record
 
-## Executed in this environment
+## Verified on GitHub Actions
 
-- TypeScript 5.9.3 compiled successfully with strict mode and unchecked-index checking.
-- Generated JavaScript was emitted to `web/dist/` and static HTML/CSS copied successfully.
-- The browser-independent Node test file passed. It contains five cases covering HTML escaping, currency minor-unit precision (including JPY/KWD), invalid-currency fallback, allowlisted state classes, and timestamp handling.
-- Static TypeScript AST-to-HTML reference checking found 44 literal element references with no missing or duplicate IDs.
-- A pinned TypeScript lockfile was generated using the cached registry integrity metadata.
-- The signed-webhook CLI passed `node --check`.
-- PostgreSQL role initialization and local-check shell scripts passed `sh -n`.
-- Docker Compose configuration passed `docker compose config --quiet`.
+[Build and reliability tests — successful run](https://github.com/TechiLoki/relaydesk/actions/runs/44299083434)
 
-## Included but NOT executed here
+Tested source commit: `9e8f9fea500b47c4c0085d7d17df591335e80be5`.
 
-- Go backend tests, Go vet, and race checks.
-- Twelve C++ arithmetic checks and the native Go/C++ protocol contract test.
-- PostgreSQL transaction/integration assertions.
-- Full Docker image builds and the real HTTP reliability smoke test.
-- Browser visual/interaction checks.
-- An actual Stripe CLI/test-account webhook delivery.
+The successful run completed:
 
-Docker daemon access is denied in this sandbox. An attempt to use the already-approved Docker command with elevated execution was rejected by the environment's approval policy; it cannot be requested here. Linux Go and C++ compilers are absent. A Windows Go installation was detected but its WSL interop startup failed because the sandbox denies the required socket operation. These restrictions prevented native build and runtime checks; they do not establish that those checks pass.
+- Docker Compose configuration validation.
+- TypeScript compilation and browser-independent Node tests.
+- C++20 compilation with warnings treated as errors, and 12 arithmetic checks.
+- Go vet, race-enabled Go tests, and the Go/C++ subprocess contract test.
+- Full runtime image build and container startup.
+- PostgreSQL integration assertions for deduplication, conflicts, idempotency, version ordering, lease fencing, retry recovery, dead-lettering, and role permissions.
+- Real HTTP smoke proof: eight concurrent webhook replays; a destination commit whose reply is lost; exactly one destination commit; a version update; five failed requests during an outage; and manual recovery with attempt history retained.
 
-The project is implemented with explicit build/test commands and a full CI workflow, but native compilation and end-to-end operation still need validation on the laptop or CI. No benchmark, production deployment, successful Stripe-account test, or remote CI result is claimed.
+## Also checked locally
+
+TypeScript 5.9.3 strict compilation, generated assets, five browser-independent utility cases, 44 static DOM references, CLI/shell syntax, and Compose configuration passed. Runtime artifacts and the private .env are excluded from source publication.
+
+## Not verified
+
+- Browser visual/interaction testing.
+- An actual Stripe CLI/test-account delivery.
+- A live external fulfillment API, production deployment, or load/performance benchmark.
+
+Docker and native compilers are restricted in the local sandbox; native and container checks were instead verified by the successful GitHub Actions run above. The fulfillment receiver remains an explicitly simulated integration.
