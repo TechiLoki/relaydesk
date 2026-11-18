@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+<title id="title">RelayDesk service architecture</title><desc id="desc">Signed webhooks and a TypeScript dashboard reach a Go API. C++ validates totals. PostgREST RPCs persist state in PostgreSQL. A Go worker delivers orders to an idempotent fulfillment simulator.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0 0 L9 3 L0 6" fill="none" stroke="#9b91bb" stroke-width="1.5"/></marker></defs>
+<rect width="1200" height="700" rx="18" fill="#172432"/>
+<text x="55" y="60" font-family="sans-serif" font-size="13" letter-spacing="3" fill="#a99ae3">GO · TYPESCRIPT · C++20 · POSTGRESQL</text>
+<text x="52" y="117" font-family="sans-serif" font-size="44" font-weight="700" fill="#f2f3f8">RelayDesk</text>
+<text x="55" y="153" font-family="sans-serif" font-size="17" fill="#9dacbc">Durable order synchronization, with the failure paths made visible.</text>
+<g stroke="#9b91bb" stroke-width="2" fill="none" marker-end="url(#arrow)">
+<path d="M300 255 H435"/><path d="M300 430 H365 V275 H435"/>
+<path d="M665 255 H800"/><path d="M550 300 V385"/>
+<path d="M665 430 H800"/><path d="M915 300 V385"/>
+<path d="M915 475 V560 H665"/><path d="M435 605 H365 V450 H300"/>
+</g>
+<g font-family="sans-serif">
+<g fill="#223548" stroke="#3f5265"><rect x="55" y="210" width="245" height="90" rx="13"/><rect x="55" y="385" width="245" height="90" rx="13"/><rect x="435" y="210" width="230" height="90" rx="13"/><rect x="800" y="210" width="245" height="90" rx="13"/><rect x="435" y="385" width="230" height="90" rx="13"/><rect x="800" y="385" width="245" height="90" rx="13"/><rect x="435" y="560" width="230" height="90" rx="13"/></g>
+<g font-size="19" font-weight="600" fill="#c5b4ff"><text x="75" y="245">Signed source events</text><text x="75" y="420">TypeScript dashboard</text><text x="455" y="245">Go HTTP API</text><text x="820" y="245">C++ validation</text><text x="455" y="420">PostgREST RPCs</text><text x="820" y="420">PostgreSQL</text><text x="455" y="595">Go delivery worker</text></g>
+<g font-size="12" fill="#9aafc2"><text x="75" y="272">Demo store / Stripe test mode</text><text x="75" y="447">Orders, attempts, recovery, audit</text><text x="455" y="272">Verify, normalize, authenticate</text><text x="820" y="272">Checked minor-unit arithmetic</text><text x="455" y="447">Internal transactional interface</text><text x="820" y="447">Orders, outbox, leases, receipts</text><text x="455" y="622">Retry + stable idempotency key</text><text x="58" y="582" fill="#8ec3ad">FULFILLMENT SIMULATOR</text><text x="58" y="610">Atomic receipt + order write</text><text x="58" y="633">Monotonic version guard</text><text x="710" y="590">At-least-once delivery</text><text x="710" y="613">Idempotent destination writes</text></g>
+</g></svg>

@@ -1,0 +1,28 @@
+name: Build and reliability tests
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  reliability:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate configuration
+        run: docker compose config --quiet
+      - name: Build TypeScript, C++ and Go; run language tests
+        run: docker compose build api
+      - name: Start database and API
+        run: docker compose up -d --wait db rest api destination
+      - name: Test PostgreSQL transactional guarantees
+        run: docker compose exec -T db psql -U postgres -d relaydesk -v ON_ERROR_STOP=1 < tests/database.sql
+      - name: Start background worker
+        run: docker compose up -d worker
+      - name: Run real HTTP delivery and recovery proof
+        run: docker compose exec -T api relaydesk -mode smoke
+      - name: Capture logs
+        if: failure()
+        run: docker compose logs --no-color --tail=150
+      - name: Stop services
+        if: always()
+        run: docker compose down

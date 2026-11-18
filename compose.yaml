@@ -1,0 +1,71 @@
+name: relaydesk
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: relaydesk
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-db-password}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:-local-app-password}
+    volumes:
+      - relay_data:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U postgres -d relaydesk]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  rest:
+    image: postgrest/postgrest:v12.2.8
+    environment:
+      PGRST_DB_URI: postgres://relay_auth:${APP_DB_PASSWORD:-local-app-password}@db:5432/relaydesk
+      PGRST_DB_SCHEMAS: api
+      PGRST_DB_ANON_ROLE: relay_app
+    depends_on:
+      db: {condition: service_healthy}
+    restart: unless-stopped
+  api:
+    image: relaydesk-app:local
+    build: .
+    environment:
+      POSTGREST_URL: http://rest:3000
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-relaydesk-local-admin}
+      DEMO_WEBHOOK_SECRET: ${DEMO_WEBHOOK_SECRET:-relaydesk-demo-signing-secret}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    ports:
+      - '127.0.0.1:${PORT:-8090}:8080'
+    depends_on: [rest]
+    healthcheck:
+      test: [CMD, relaydesk, -mode, health]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  worker:
+    image: relaydesk-app:local
+    build: .
+    command: [-mode, worker]
+    environment:
+      POSTGREST_URL: http://rest:3000
+      DESTINATION_URL: ${DESTINATION_URL:-http://destination:8080/orders}
+      DESTINATION_TOKEN: ${DESTINATION_TOKEN:-relaydesk-local-destination}
+    depends_on: [rest, destination]
+    restart: unless-stopped
+  destination:
+    image: relaydesk-app:local
+    build: .
+    command: [-mode, destination]
+    environment:
+      POSTGREST_URL: http://rest:3000
+      DESTINATION_TOKEN: ${DESTINATION_TOKEN:-relaydesk-local-destination}
+    depends_on: [rest]
+    healthcheck:
+      test: [CMD, relaydesk, -mode, health]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+volumes:
+  relay_data:
