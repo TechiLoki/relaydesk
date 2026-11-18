@@ -1,6 +1,6 @@
 # RelayDesk — Order synchronization service
 
-![RelayDesk project overview](docs/portfolio-cover.png)
+![RelayDesk project overview](docs/project-overview.png)
 
 [Detailed architecture](docs/architecture.svg)
 
@@ -29,7 +29,7 @@ docker compose logs -f --tail=100 api worker destination
 docker compose down
 ```
 
-Port 8090 avoids the earlier portfolio apps. Only the Go API publishes a port, bound to localhost. PostgreSQL, PostgREST, and the fulfillment simulator stay on the Compose network.
+The API listens on port 8090. Only the Go API publishes a port, bound to localhost. PostgreSQL, PostgREST, and the fulfillment simulator stay on the Compose network.
 
 ## What to demonstrate
 
@@ -211,7 +211,7 @@ Generated browser assets are committed so `go test` can resolve the embed direct
 
 ## Local deployment scope
 
-This is a single-user local portfolio application, not a hosted multi-tenant product. Keep the localhost binding and replace development secrets before any exposure. Remote deployment also needs TLS, a proper identity/access model, request limits, and a deliberate policy for simulator controls and customer-data retention.
+This is a single-user local application, not a hosted multi-tenant product. Keep the localhost binding and replace development secrets before any exposure. Remote deployment also needs TLS, a proper identity/access model, request limits, and a deliberate policy for simulator controls and customer-data retention.
 
 PostgreSQL schema files run only on first initialization of the named volume. Do not delete the volume to deploy code changes. Later database changes need explicit migrations. For development credentials, use URL-safe database passwords because the PostgREST connection URI uses them directly; changing `.env` does not rotate an existing database role's password.
 
@@ -222,12 +222,6 @@ docker compose exec -T db pg_dump -U postgres -d relaydesk > relaydesk-backup.sq
 ```
 
 No data deletion/reset control is provided in the UI. Backups should be restore-tested in a separate stack before relying on them.
-
-## Portfolio description
-
-“Built an order synchronization service with a Go API and delivery worker, a C++ checked-arithmetic validation engine, a TypeScript operations dashboard, and PostgreSQL transactions exposed through internal PostgREST RPCs. Implemented signed webhook ingestion, durable deduplication, version-aware delivery, lease fencing, retries with backoff, manual recovery, and an auditable fulfillment simulator.”
-
-Describe the Stripe integration as test-mode capable, not live-account verified, until you have exercised it against your own Stripe test account.
 
 ## References
 
